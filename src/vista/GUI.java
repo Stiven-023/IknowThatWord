@@ -1,4 +1,7 @@
 package myProject;
+import  javax.swing.*;
+import  java.awt.*;
+import java.awt.event.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +14,10 @@ import java.awt.*;
 public class GUI extends JFrame {
 
     private Header headerProject;
+    JPanel panelImagen, panelBotton;
+    JButton jugar, comoJuega, paQueSirve;
+    Container contenedor;
+
 
     /**
      * Constructor of GUI class
@@ -20,13 +27,39 @@ public class GUI extends JFrame {
 
         //Default JFrame configuration
         this.setTitle("The Title app");
-        this.setSize(200,100);
+        contenedor = this.getContentPane();
+        this.setSize(600,400);
         //this.pack();
         this.setResizable(true);
         this.setVisible(true);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        //Instanciando los paneles
+        panelBotton = new JPanel();
+        panelImagen = new JPanel();
+        /*
+        Mas adelante los voy a necesitar
+        panelImagen.setFocusable(true);
+        panelImagen.requestFocusInWindow();
+        */
+         //Instanciando los botones
+        jugar = new JButton("Jugar");
+        comoJuega = new JButton("Como se juega");
+        paQueSirve = new JButton("Para que sirve");
+
+        panelBotton.add(jugar);
+        panelBotton.add(comoJuega);
+        panelBotton.add(paQueSirve);
+
+        contenedor.add(panelImagen,BorderLayout.CENTER);
+        contenedor.add(panelBotton,BorderLayout.SOUTH);
+
+        repaint();
+        revalidate();
     }
+
+
 
     /**
      * This method is used to set up the default JComponent Configuration,
@@ -37,6 +70,7 @@ public class GUI extends JFrame {
         //Create Listener Object and Control Object
         //Set up JComponents
         headerProject = new Header("Header ...", Color.BLACK);
+
 
         this.add(headerProject,BorderLayout.NORTH); //Change this line if you change JFrame Container's Layout
     }
