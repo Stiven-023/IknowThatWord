@@ -13,7 +13,7 @@ public class FileManager {
         ArrayList<String> frases= new ArrayList<String>();
 
         try {
-            fileReader = new FileReader("src/fileManager/files/fileText.txt");
+            fileReader = new FileReader("src/myProject/files/fileText.txt");
             input = new BufferedReader(fileReader);
             String line = input.readLine();
 
