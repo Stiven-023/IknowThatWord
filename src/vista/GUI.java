@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 
 /**
@@ -33,10 +34,12 @@ public class GUI extends JFrame {
 
 
     private Header headerProject;
-    JPanel panelImagen, panelBotton;
+    JPanel panelImagen, panelBotton, panelJuego;
     JButton jugar, comoJuega, paQueSirve,level1,level2,level3,level4,level5,level6,level7,level8,level9,level10;
     Container contenedor;
+    private JPanel panelUno, panelDos;
     private Escucha escucha;
+    private CardLayout cardLayout;
     private  ArrayList<String>nombre = new ArrayList<String>();
 
 
@@ -49,6 +52,7 @@ public class GUI extends JFrame {
         //Default JFrame configuration
         this.setTitle("The Title app");
         contenedor = this.getContentPane();
+        this.revalidate();
         this.setSize(600,400);
         //this.pack();
         this.setResizable(true);
@@ -56,10 +60,20 @@ public class GUI extends JFrame {
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        cardLayout = new CardLayout();
+
+        panelUno = new JPanel();
+        panelUno.setBackground(Color.RED);
+
+        panelDos = new JPanel();
+        panelDos.setBackground(Color.BLUE);
 
         //Instanciando los paneles
         panelBotton = new JPanel();
         panelImagen = new JPanel();
+        //panelImagen.setLayout(cardLayout);
+        panelJuego = new JPanel();
+        //panelJuego.setLayout(cardLayout);
         /*
         Mas adelante los voy a necesitar
         panelImagen.setFocusable(true);
@@ -88,22 +102,22 @@ public class GUI extends JFrame {
         panelBotton.add(comoJuega);
         panelBotton.add(paQueSirve);
 
-        panelImagen.add(level1);
-        panelImagen.add(level2);
-        panelImagen.add(level3);
-        panelImagen.add(level4);
-        panelImagen.add(level5);
-        panelImagen.add(level6);
-        panelImagen.add(level7);
-        panelImagen.add(level8);
-        panelImagen.add(level9);
-        panelImagen.add(level10);
+        panelJuego.add(level1);
+        panelJuego.add(level2);
+        panelJuego.add(level3);
+        panelJuego.add(level4);
+        panelJuego.add(level5);
+        panelJuego.add(level6);
+        panelJuego.add(level7);
+        panelJuego.add(level8);
+        panelJuego.add(level9);
+        panelJuego.add(level10);
 
         contenedor.add(panelImagen,BorderLayout.CENTER);
         contenedor.add(panelBotton,BorderLayout.SOUTH);
+       // contenedor.add(panelJuego);
 
-        repaint();
-        revalidate();
+        jugar.addActionListener(escucha);
         comoJuega.addActionListener(escucha);
         level1.addActionListener(escucha);
         level2.addActionListener(escucha);
@@ -116,15 +130,21 @@ public class GUI extends JFrame {
         level9.addActionListener(escucha);
         level10.addActionListener(escucha);
 
-
-
-
-
     }
 
+    private void mostrarNuevoPanel(){
+        JPanel nuevoPanel = new JPanel();
+        nuevoPanel.setBackground(Color.RED);
 
+        panelBotton.remove(level1);
 
+        panelBotton.add(nuevoPanel, BorderLayout.CENTER);
 
+        revalidate();
+        repaint();
+    }
+
+    
 
     /**
      * This method is used to set up the default JComponent Configuration,
@@ -159,6 +179,15 @@ public class GUI extends JFrame {
 
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
+            if(actionEvent.getSource() == jugar){
+                contenedor.remove(panelImagen);
+                contenedor.add(panelJuego, BorderLayout.CENTER);
+                contenedor. revalidate();
+                contenedor.repaint();
+
+                System.out.println("RRRR");
+            }
+
             if (actionEvent.getSource()==comoJuega) {
                 logicPart.crearLista(0);
             ArrayList<String> buenas = logicPart.getListaPalabras();
@@ -173,6 +202,7 @@ public class GUI extends JFrame {
                 logicPart.crearLista(10);
                 ArrayList<String> buenas = logicPart.getListaPalabras();
                 String general1 = "";
+
                 for (String str: buenas) {
                     general1 += str + "\n";
                 }
