@@ -144,7 +144,7 @@ public class GUI extends JFrame {
         repaint();
     }
 
-    
+
 
     /**
      * This method is used to set up the default JComponent Configuration,
