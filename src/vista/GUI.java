@@ -116,6 +116,7 @@ public class GUI extends JFrame {
 
         labelPalabras = new JLabel("");
         labelPalabras.setFont(new Font("Arial", Font.BOLD, 20));
+
         panelJuego.add(labelPalabras);
 
     }
@@ -132,7 +133,7 @@ public class GUI extends JFrame {
         Thread hilo = new Thread(() -> {
             try {
                 while (index < goodWords.size() - 1) {
-                    Thread.sleep(500); // Esperar 5 segundos
+                    Thread.sleep(5000); // Esperar 5 segundos
                     SwingUtilities.invokeLater(() -> {
                         changeWord();
                         index++;
