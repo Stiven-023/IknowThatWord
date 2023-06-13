@@ -25,16 +25,18 @@ public class GUI extends JFrame {
             + "\nPulsa sobre la mitad IZQUIERDA. Hagamos una prueba...";
 
     private Header headerProject;
-    JPanel panelImagen, panelBotton, panelJuego;
+    JPanel panelImagen, panelBotton, panelJuego, panelContinuidad, si_no, panelPuntaje;
     JButton jugar, comoJuega, paQueSirve, level1, level2, level3, level4, level5, level6, level7, level8, level9,
-            level10;
-    JLabel labelPalabras;
+            level10,continuar, btnSi,btnNo;
+    JLabel labelPalabras,labelSiNo,labelPuntaje;
+    JTextArea memorizar;
     Container contenedor;
     private Escucha escucha;
     private ArrayList<String> goodWords;
     private ArrayList<String> godBadWords;
+    private int juegoPuntaje;
     private static LogicPart logic;
-    private int index = 0;
+    private int indexGodWords = 0,indexBadWords = 0;
 
     /**
      * Constructor of GUI class
@@ -55,6 +57,9 @@ public class GUI extends JFrame {
         // Instanciando los paneles
         panelBotton = new JPanel();
         panelImagen = new JPanel();
+        panelContinuidad = new JPanel();
+        si_no = new JPanel();
+        panelPuntaje = new JPanel();
         /*
          * Mas adelante los voy a necesitar
          * panelImagen.setFocusable(true);
@@ -64,6 +69,10 @@ public class GUI extends JFrame {
         jugar = new JButton("Jugar");
         comoJuega = new JButton("Como se juega");
         paQueSirve = new JButton("Para que sirve");
+        continuar = new JButton("Continuar");
+        btnNo = new JButton("No");
+        btnSi = new JButton("Si");
+
         level1 = new JButton("1");
         level2 = new JButton("2");
         level3 = new JButton("3");
@@ -94,6 +103,28 @@ public class GUI extends JFrame {
         panelImagen.add(level9);
         panelImagen.add(level10);
 
+        memorizar = new JTextArea("¿Seguro que ya has memorizado todas las palabras?"+"\n"+" Demuestralo!!");
+        labelSiNo = new JLabel();
+        labelPuntaje = new JLabel("Puntaje:"+juegoPuntaje);
+
+        memorizar.setFont(new Font("Arial", Font.BOLD, 20));
+        memorizar.setEditable(false);
+
+        panelContinuidad.setLayout(new BorderLayout());
+        panelContinuidad.add(continuar, BorderLayout.SOUTH);
+        panelContinuidad.add(memorizar,BorderLayout.CENTER);
+        si_no.setLayout(new BorderLayout());
+
+        si_no.add(labelSiNo, BorderLayout.CENTER);
+        panelPuntaje.add(btnSi);
+        panelPuntaje.add(btnNo);
+        panelPuntaje.add(labelPuntaje);
+
+        si_no.add(panelPuntaje,BorderLayout.SOUTH);
+
+
+
+
         contenedor.add(panelImagen, BorderLayout.CENTER);
         contenedor.add(panelBotton, BorderLayout.SOUTH);
 
@@ -110,6 +141,11 @@ public class GUI extends JFrame {
         level8.addActionListener(escucha);
         level9.addActionListener(escucha);
         level10.addActionListener(escucha);
+        continuar.addActionListener(escucha);
+        btnSi.addActionListener(escucha);
+        btnNo.addActionListener(escucha);
+
+
 
         panelJuego = new JPanel();
         panelJuego.setBackground(Color.GRAY);
@@ -117,14 +153,23 @@ public class GUI extends JFrame {
         labelPalabras = new JLabel("");
         labelPalabras.setFont(new Font("Arial", Font.BOLD, 20));
 
+
         panelJuego.add(labelPalabras);
 
     }
 
+    /**
+     *
+     */
     private void changeWord() {
-        System.out.println(index);
-        labelPalabras.setText(goodWords.get(index));
+        System.out.println(indexGodWords);
+        labelPalabras.setText(goodWords.get(indexGodWords));
     }
+    private void changeBadWord() {
+        System.out.println(indexBadWords);
+        labelSiNo.setText(godBadWords.get(indexBadWords));
+    }
+
 
     /**
      * Change word every 5 seconds
@@ -132,11 +177,30 @@ public class GUI extends JFrame {
     private void changeWordTimer() {
         Thread hilo = new Thread(() -> {
             try {
-                while (index < goodWords.size() - 1) {
+
+                while (indexGodWords < goodWords.size() - 1) {
                     Thread.sleep(5000); // Esperar 5 segundos
                     SwingUtilities.invokeLater(() -> {
                         changeWord();
-                        index++;
+                        indexGodWords++;
+                    });
+                }
+                goContinuar();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        hilo.start();
+    }
+    private void changeBadWordTimer(){
+        Thread hilo = new Thread(() -> {
+            try {
+
+                while (indexBadWords < godBadWords.size() - 1) {
+                    Thread.sleep(5000); // Esperar 5 segundos
+                    SwingUtilities.invokeLater(() -> {
+                        changeBadWord();
+                        indexBadWords++;
                     });
                 }
             } catch (InterruptedException e) {
@@ -144,23 +208,77 @@ public class GUI extends JFrame {
             }
         });
         hilo.start();
+
+
     }
+
+
 
     public void goGame(int level) {
         logic.crearLista(level);
         goodWords = logic.getListaPalabras();
+        godBadWords = logic.getCorrectAndIncorrect();
+        juegoPuntaje = logic.getPuntaje();
+
         contenedor.remove(panelImagen);
         contenedor.add(panelJuego, BorderLayout.CENTER);
-        changeWordTimer(); // Llamar a changeWordTimer() aquí
         repaint();
         revalidate();
-        resetGame();
+        //resetGame();
+        changeWordTimer(); // Llamar a changeWordTimer() aquí
+
+    }
+    public void goSi_No() {
+        contenedor.remove(panelContinuidad);
+        contenedor.add(si_no, BorderLayout.CENTER);
+        repaint();
+        revalidate();
+        //resetGame();
+        changeBadWordTimer(); // Llamar a changeWordTimer() aquí
+
     }
 
-    public void resetGame() {
-        index = 0;
-        logic.resetGodWord();
+
+    /**
+     * metodo para agregar frase despues de que se termine de mostrar las palabras por nivel
+     *
+     */
+
+    public void goContinuar(){
+        contenedor.remove(panelJuego);
+        contenedor.add(panelContinuidad, BorderLayout.CENTER);
+        repaint();
+        revalidate();
+
     }
+
+
+    public void resetGame() {
+        indexBadWords = 0;
+        indexGodWords = 0;
+        logic.resetListas();
+    }
+
+    /**
+     * Metodo para actualizar el puntaje
+     */
+    public void updatePuntaje(int indicador){
+        System.out.println("badWords: "+indexBadWords);
+        String palabra = godBadWords.get(indexBadWords);
+        if(indicador ==1 && logic.verificador(palabra)){
+            juegoPuntaje += 10;
+            labelPuntaje.setText("Puntaje: "+juegoPuntaje);
+        }
+        if(indicador ==2 && !logic.verificador(palabra)) {
+            juegoPuntaje += 10;
+            labelPuntaje.setText("Puntaje: "+juegoPuntaje);
+
+        }
+        System.out.println("This: "+juegoPuntaje);
+
+    }
+
+
 
     /**
      * This method is used to set up the default JComponent Configuration,
@@ -192,6 +310,7 @@ public class GUI extends JFrame {
      * inner class that extends an Adapter Class or implements Listeners used by GUI
      * class
      */
+
     private class Escucha implements ActionListener {
 
         @Override
@@ -205,7 +324,19 @@ public class GUI extends JFrame {
                 }
                 JOptionPane.showMessageDialog(null, MENSAJE_INICIO);
             }
+            if (actionEvent.getSource() == continuar){
+                goSi_No();
 
+            }
+            if(actionEvent.getSource() ==btnSi){
+                System.out.println("SI");
+                updatePuntaje(1);
+
+            }
+            if(actionEvent.getSource() ==btnNo){
+                System.out.println("NO");
+                updatePuntaje(2);
+            }
             if (actionEvent.getSource() == level1) {
                 System.out.println("hola");
                 goGame(10);
