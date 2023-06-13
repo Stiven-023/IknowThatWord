@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import javax.swing.Icon;
 
 /**
  * This class is used for ...
@@ -25,10 +26,10 @@ public class GUI extends JFrame {
             + "\nPulsa sobre la mitad IZQUIERDA. Hagamos una prueba...";
 
     private Header headerProject;
-    JPanel panelImagen, panelBotton, panelJuego, panelContinuidad, si_no, panelPuntaje;
-    JButton jugar, comoJuega, paQueSirve, level1, level2, level3, level4, level5, level6, level7, level8, level9,
+    JPanel panelImagen, panelBotton, panelBotton2, panelJuego, panelContinuidad, si_no, panelPuntaje;
+    JButton jugar, comoJuega, volver, level1, level2, level3, level4, level5, level6, level7, level8, level9,
             level10,continuar, btnSi,btnNo;
-    JLabel labelPalabras,labelSiNo,labelPuntaje;
+    JLabel labelPalabras,labelSiNo,labelPuntaje, fondo;
     JTextArea memorizar;
     Container contenedor;
     private Escucha escucha;
@@ -56,6 +57,7 @@ public class GUI extends JFrame {
 
         // Instanciando los paneles
         panelBotton = new JPanel();
+        panelBotton2 = new JPanel();
         panelImagen = new JPanel();
         panelContinuidad = new JPanel();
         si_no = new JPanel();
@@ -68,7 +70,7 @@ public class GUI extends JFrame {
         // Instanciando los botones
         jugar = new JButton("Jugar");
         comoJuega = new JButton("Como se juega");
-        paQueSirve = new JButton("Para que sirve");
+        volver = new JButton("Volver");
         continuar = new JButton("Continuar");
         btnNo = new JButton("No");
         btnSi = new JButton("Si");
@@ -90,8 +92,13 @@ public class GUI extends JFrame {
          */
         panelBotton.add(jugar);
         panelBotton.add(comoJuega);
-        panelBotton.add(paQueSirve);
+        panelBotton2.add(volver);
 
+
+        //fondo.setIcon(new ImageIcon("/resources/esaPalabraSuena.png"));
+        //fondo.setIcon( new ImageIcon( getClass().getResource( "/resources/esaPalabraSuena.png" ) ) );
+      //  fondo.setBounds( 0, 0, fondo.getIcon().getIconWidth(), fondo.getIcon().getIconHeight() );
+        //panelImagen.add(fondo);
         panelImagen.add(level1);
         panelImagen.add(level2);
         panelImagen.add(level3);
@@ -106,6 +113,7 @@ public class GUI extends JFrame {
         memorizar = new JTextArea("¿Seguro que ya has memorizado todas las palabras?"+"\n"+" Demuestralo!!");
         labelSiNo = new JLabel();
         labelPuntaje = new JLabel("Puntaje:"+juegoPuntaje);
+        fondo = new JLabel();
 
         memorizar.setFont(new Font("Arial", Font.BOLD, 20));
         memorizar.setEditable(false);
@@ -123,14 +131,17 @@ public class GUI extends JFrame {
         si_no.add(panelPuntaje,BorderLayout.SOUTH);
 
 
-
-
-        contenedor.add(panelImagen, BorderLayout.CENTER);
+        //contenedor.add(fondo);
+        contenedor.add(panelBotton2, BorderLayout.SOUTH);
+        //contenedor.add(panelImagen, BorderLayout.CENTER);
         contenedor.add(panelBotton, BorderLayout.SOUTH);
+        /*contenedor.add(panelBotton2, BorderLayout.SOUTH);*/
 
         repaint();
         revalidate();
         comoJuega.addActionListener(escucha);
+        jugar.addActionListener(escucha);
+        volver.addActionListener(escucha);
         level1.addActionListener(escucha);
         level2.addActionListener(escucha);
         level3.addActionListener(escucha);
@@ -238,7 +249,6 @@ public class GUI extends JFrame {
 
     }
 
-
     /**
      * metodo para agregar frase despues de que se termine de mostrar las palabras por nivel
      *
@@ -305,6 +315,22 @@ public class GUI extends JFrame {
             logic = new LogicPart();
         });
     }
+    public class Imagen extends javax.swing.JPanel {
+        int x, y;
+
+        public Imagen(JPanel jPanel1) {
+            this.x = jPanel1.getWidth();
+            this.y = jPanel1.getHeight();
+            this.setSize(x, y);
+        }
+
+        @Override
+        public void paint(Graphics g) {
+            ImageIcon Img = new ImageIcon(getClass().getResource("/resources/esaPalabraSuena.png"));
+            g.drawImage(Img.getImage(), 0, 0, x, y, null);
+        }
+
+    }
 
     /**
      * inner class that extends an Adapter Class or implements Listeners used by GUI
@@ -324,6 +350,19 @@ public class GUI extends JFrame {
                 }
                 JOptionPane.showMessageDialog(null, MENSAJE_INICIO);
             }
+            if (actionEvent.getSource() == jugar) {
+                panelBotton.setVisible(false);
+                contenedor.add(panelImagen, BorderLayout.CENTER);
+                panelImagen.setVisible(true);
+                contenedor.add(panelBotton2, BorderLayout.SOUTH);
+                panelBotton2.setVisible(true);
+            }
+            if (actionEvent.getSource() == volver) {
+                panelBotton2.setVisible(false);
+                panelJuego.setVisible(false);
+                panelBotton.setVisible(true);
+                panelImagen.setVisible(false);
+            }
             if (actionEvent.getSource() == continuar){
                 goSi_No();
 
@@ -340,45 +379,87 @@ public class GUI extends JFrame {
             if (actionEvent.getSource() == level1) {
                 System.out.println("hola");
                 goGame(10);
+                panelBotton2.setVisible(false);
+                /*panelBotton.setVisible(false);
+                panelBotton2.setVisible(true);
+                panelImagen.setVisible(true);*/
+
             }
 
             if (actionEvent.getSource() == level2) {
                 System.out.println("hola");
                 goGame(20);
+                panelBotton2.setVisible(false);
+                /*panelBotton.setVisible(false);
+                panelBotton2.setVisible(true);
+                panelImagen.setVisible(true);*/
             }
             if (actionEvent.getSource() == level3) {
                 System.out.println("hola");
                 goGame(25);
+                panelBotton2.setVisible(false);
+                /*panelBotton.setVisible(false);
+                panelBotton2.setVisible(true);
+                panelImagen.setVisible(true);*/
             }
             if (actionEvent.getSource() == level4) {
                 System.out.println("hola");
                 goGame(30);
+                panelBotton2.setVisible(false);
+                /*panelBotton.setVisible(false);
+                panelBotton2.setVisible(true);
+                panelImagen.setVisible(true);*/
             }
             if (actionEvent.getSource() == level5) {
                 System.out.println("hola");
                 goGame(35);
+                panelBotton2.setVisible(false);
+                /*panelBotton.setVisible(false);
+                panelBotton2.setVisible(true);
+                panelImagen.setVisible(true);*/
             }
             if (actionEvent.getSource() == level6) {
                 System.out.println("hola");
                 goGame(40);
+                panelBotton2.setVisible(false);
+                /*panelBotton.setVisible(false);
+                panelBotton2.setVisible(true);
+                panelImagen.setVisible(true);*/
             }
             if (actionEvent.getSource() == level7) {
                 System.out.println("hola");
                 goGame(50);
+                panelBotton2.setVisible(false);
+                /*panelBotton.setVisible(false);
+                panelBotton2.setVisible(true);
+                panelImagen.setVisible(true);*/
             }
             if (actionEvent.getSource() == level8) {
                 System.out.println("hola");
                 goGame(60);
+                panelBotton2.setVisible(false);
+                /*panelBotton.setVisible(false);
+                panelBotton2.setVisible(true);
+                panelImagen.setVisible(true);*/
             }
             if (actionEvent.getSource() == level9) {
                 System.out.println("hola");
                 goGame(70);
+                panelBotton2.setVisible(false);
+                /*panelBotton.setVisible(false);
+                panelBotton2.setVisible(true);
+                panelImagen.setVisible(true);*/
             }
             if (actionEvent.getSource() == level10) {
                 System.out.println("hola");
                 goGame(100);
+                panelBotton2.setVisible(false);
+                /*panelBotton.setVisible(false);
+                panelBotton2.setVisible(true);
+                panelImagen.setVisible(true);*/
                 // System.exit(0);
             }
+
 
         }
     }
