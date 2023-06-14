@@ -389,8 +389,8 @@ public class GUI extends JFrame {
             if (actionEvent.getSource() == level2) {
                 System.out.println("hola");
                 goGame(20);
-                panelBotton2.setVisible(false);
-                /*panelBotton.setVisible(false);
+                /*panelBotton2.setVisible(false);
+                panelBotton.setVisible(false);
                 panelBotton2.setVisible(true);
                 panelImagen.setVisible(true);*/
             }
